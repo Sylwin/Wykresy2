@@ -34,6 +34,7 @@ public:
     void types();
     void depth();
     void setupPlot(int fileIndex, int typeIndex);
+//    void plotMousePress(QMouseEvent *event);
 
 private:
     Ui::MainWindow *ui;

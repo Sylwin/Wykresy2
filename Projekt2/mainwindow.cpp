@@ -26,27 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->typesBox, SIGNAL(currentIndexChanged(int)), this, SLOT(typesComboBox(int)));
 
     filesComboBox(0);
-    // configure scroll bars:
-    // Since scroll bars only support integer values, we'll set a high default range of -500..500 and
-    // divide scroll bar position values by 100 to provide a scroll range -5..5 in floating point
-    // axis coordinates. if you want to dynamically grow the range accessible with the scroll bar,
-    // just increase the the minimum/maximum values of the scroll bars as needed.
-   // double min = *std::min_element(files[0].types[0].values.constBegin(), files[0].types[0].values.constEnd());
-   // double max = *std::max_element(files[0].types[0].values.constBegin(), files[0].types[0].values.constEnd());
-//    qSort(files[0].types[0].values);
-//    double min = files[0].types[0].values[1];
-//    double max = files[0].types[0].values.last();
-//    qDebug() << min;
-//    qDebug() << max;
 
-//    ui->verticalScrollBar->setRange(2170, 2381);
-//    ui->verticalScrollBar->setInvertedControls(true);
-//    qDebug() << files[0].start;
-//    qDebug() << files[0].stop;
-
-    // create connection between axes and scroll bars:
     connect(ui->verticalScrollBar, SIGNAL(valueChanged(int)), this, SLOT(vertScrollBarChanged(int)));
-    connect(ui->plot->xAxis2, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
 }
 
@@ -197,7 +179,14 @@ void MainWindow::types()
                 valSplitted.removeFirst();
                 valSplitted.removeLast();
                 float value = valSplitted[k].toFloat();
-                type[k].values.append(value);
+//                if( value != files[i].empty )
+//                {
+                    type[k].values.append(value);
+//                }
+//                else
+//                {
+//                    type[k].values.append(null);
+//                }
             }
           //  qDebug() << files[i].values;
 
@@ -231,47 +220,62 @@ void MainWindow::YRange(int index)
 {
     int center = files[index].start + ((files[index].stop-files[index].start)/2);
     int odch = files[index].stop-files[index].start;
-    ui->plot->yAxis->setRange(center, odch/4, Qt::AlignCenter);
+    if( index == 0 )
+    {
+        ui->plot->yAxis->setRange(center, odch/2, Qt::AlignCenter);
+    }
+    else if( index == 1 )
+    {
+        ui->plot->yAxis->setRange(center, odch/6, Qt::AlignCenter);
+    }
+    else if( index == 2 )
+    {
+        ui->plot->yAxis->setRange(center, odch/15, Qt::AlignCenter);
+    }
 }
 
 void MainWindow::setupPlot(int fileIndex, int typeIndex)
 {
     ui->plot->clearGraphs();
-    ui->plot->addGraph(ui->plot->yAxis, ui->plot->xAxis2);
+    ui->plot->addGraph(ui->plot->yAxis, ui->plot->xAxis);
     ui->plot->graph()->setPen(QPen(Qt::blue));
     ui->plot->graph(0)->setData(files[fileIndex].depth, files[fileIndex].types[typeIndex].values);
     ui->plot->axisRect()->setupFullAxesBox(true);
     ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     // The following plot setup is mostly taken from the plot demos:
     qSort(files[fileIndex].types[typeIndex].values);
-    double min = files[fileIndex].types[typeIndex].values[1];
+    std::unique(files[fileIndex].types[typeIndex].values.begin(), files[fileIndex].types[typeIndex].values.end());
+    double min = files[fileIndex].types[typeIndex].values.first();
     double max = files[fileIndex].types[typeIndex].values.last();
+
+    qDebug() << files[fileIndex].empty;
+    if( min == files[fileIndex].empty )
+    {
+        min = files[fileIndex].types[typeIndex].values[1];
+    }
+    if( max == files[fileIndex].empty )
+    {
+        int beforeTheLast = files[fileIndex].types[typeIndex].values.size();
+        max = files[fileIndex].types[typeIndex].values[beforeTheLast-1];
+    }
     qDebug() << min;
     qDebug() << max;
-//    ui->verticalScrollBar->setRange(2170, 2381);
-//    ui->verticalScrollBar->setInvertedControls(true);
+
     qDebug() << files[fileIndex].start;
     qDebug() << files[typeIndex].stop;
-
     int st = files[fileIndex].start;
     int sp = files[fileIndex].stop;
 
     ui->verticalScrollBar->setRange(-sp, -st);
+    ui->verticalScrollBar->setInvertedAppearance(true);
 
     ui->plot->yAxis->setRangeReversed(true);
-    ui->plot->xAxis2->setVisible(true);
-  //  ui->plot->xAxis->setVisible(false);
     ui->plot->xAxis->grid()->setVisible(false);
     ui->plot->yAxis->grid()->setVisible(false);
     ui->plot->xAxis->setLabel("values");
     ui->plot->yAxis->setLabel("depth");
 
     ui->plot->xAxis->setRange((max+min)/2, max-min, Qt::AlignCenter);
-    ui->plot->xAxis2->setRange((max+min)/2, max-min, Qt::AlignCenter);
-    //ui->plot->yAxis->setRange(2275,120,Qt::AlignCenter);
-//    int center = files[fileIndex].start + ((files[fileIndex].stop-files[fileIndex].start)/2);
-//    int odch = files[fileIndex].stop-files[fileIndex].start;
-//    ui->plot->yAxis->setRange(center, odch, Qt::AlignCenter);
     YRange(fileIndex);
 }
 
@@ -295,7 +299,7 @@ void MainWindow::filesComboBox(int fileIndex)//, int typeIndex)
     switch(fileIndex)
     {
     case 0:
-        ui->typesBox->clear();
+        //ui->typesBox->clear();
         foreach(GraphType type, files[0].types)
         {
             ui->typesBox->addItem(type.typeName);
@@ -304,16 +308,16 @@ void MainWindow::filesComboBox(int fileIndex)//, int typeIndex)
    //     ui->plot->replot();
         break;
     case 1:
-        ui->typesBox->clear();
+     //   ui->typesBox->clear();
         foreach(GraphType type, files[1].types)
         {
             ui->typesBox->addItem(type.typeName);
         };
-        setupPlot(1, 0);
+        setupPlot(1, 7);
 //        ui->plot->replot();
         break;
     case 2:
-        ui->typesBox->clear();
+      //  ui->typesBox->clear();
         foreach(GraphType type, files[2].types)
         {
             ui->typesBox->addItem(type.typeName);
