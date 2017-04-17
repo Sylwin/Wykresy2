@@ -6,54 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
-    <height>378</height>
+    <width>500</width>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QCustomPlot" name="widget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>35</y>
-      <width>490</width>
-      <height>281</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="typesBox">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>0</y>
-      <width>69</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="filesBox">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>69</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="scaleBox">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>0</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QComboBox" name="filesBox"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="typesBox"/>
+    </item>
+    <item row="0" column="2">
+     <widget class="QComboBox" name="scaleBox"/>
+    </item>
+    <item row="1" column="3">
+     <widget class="QScrollBar" name="verticalScrollBar">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="3">
+     <widget class="QCustomPlot" name="plot" native="true"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

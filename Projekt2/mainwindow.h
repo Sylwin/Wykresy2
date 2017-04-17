@@ -9,6 +9,7 @@
 #include <graphfile.h>
 #include <QVector>
 #include <QRegExp>
+#include <qcustomplot.h>
 
 namespace Ui {
 class MainWindow;
@@ -32,14 +33,18 @@ public:
     void empty();
     void types();
     void depth();
-    //static QStringList typesSplit;
-    //GraphType type[typesSplit.size()];
+    void setupPlot(int fileIndex, int typeIndex);
 
 private:
     Ui::MainWindow *ui;
 
 public slots:
-    void filesComboBox(int index);
+    void YRange(int index);
+    void filesComboBox(int fileIndex);//, int typeIndex);
+    void typesComboBox(int typeIndex);//, int typeIndex);
+    void vertScrollBarChanged(int value);
+//    void xAxisChanged(QCPRange range);
+    void yAxisChanged(QCPRange range);
 };
 
 #endif // MAINWINDOW_H

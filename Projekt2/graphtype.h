@@ -7,7 +7,7 @@ class GraphType
 public:
     GraphType();
     QString typeName;
-    QVector<float> values;
+    QVector<double> values;
 };
 
 #endif // GRAPHTYPE_H
