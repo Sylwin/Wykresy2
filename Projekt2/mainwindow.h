@@ -32,19 +32,18 @@ public:
     void step();
     void empty();
     void types();
-    void depth();
     void setupPlot(int fileIndex, int typeIndex);
-//    void plotMousePress(QMouseEvent *event);
-
+    double min;
+    double max;
 private:
     Ui::MainWindow *ui;
 
 public slots:
     void YRange(int index);
-    void filesComboBox(int fileIndex);//, int typeIndex);
-    void typesComboBox(int typeIndex);//, int typeIndex);
+    void filesComboBox(int fileIndex);
+    void typesComboBox(int typeIndex);
+    void scaleComboBox(int scaleIndex);
     void vertScrollBarChanged(int value);
-//    void xAxisChanged(QCPRange range);
     void yAxisChanged(QCPRange range);
 };
 

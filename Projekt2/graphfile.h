@@ -13,8 +13,6 @@ public:
     float stop;
     float step;
     float empty;
-//    QVector<float> values;
-    QVector<double> depth;
 };
 
 #endif // GRAPHFILE_H

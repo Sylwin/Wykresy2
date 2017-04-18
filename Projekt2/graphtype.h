@@ -8,6 +8,7 @@ public:
     GraphType();
     QString typeName;
     QVector<double> values;
+    QVector<double> depth;
 };
 
 #endif // GRAPHTYPE_H
